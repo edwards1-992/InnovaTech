@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<!--
+  =============================================================
+  INNOVATECH — admin.html
+  Panel de administración protegido.
+  - Solo usuarios con rol 'admin' pueden acceder
+  - Muestra estadísticas del sistema
+  - Tabla de pedidos con items
+  - Tabla de clientes registrados
+  - Tabs para alternar entre pedidos y clientes
+  - Toda la comunicación con la API via fetch + header X-Admin-Email
+  =============================================================
+-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InnovaTech — Panel Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Estilos específicos del panel admin (inline) -->
+  <style>
+    body { padding-top: 88px; background: var(--bg-body); }
+    .admin-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
+    .admin-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-bottom: 32px; }
+    .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow); }
+    .stat-card .num { font-family: var(--font-display); font-size: 28px; font-weight: 800; color: var(--accent); }
+    .stat-card .label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; margin-top: 4px; }
+    .admin-section { margin-bottom: 40px; }
+    .admin-table-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); }
+    .admin-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .admin-table th { text-align: left; padding: 14px 16px; background: var(--bg-side); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--text-secondary); border-bottom: 1px solid var(--border); }
+    .admin-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); color: var(--text-primary); }
+    .admin-table tr:hover td { background: var(--bg-side); }
+    .admin-table .estado { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 600; }
+    .estado-nuevo { background: var(--accent-light); color: var(--accent-hover); }
+    .estado-enviado { background: #d1fae5; color: #065f46; }
+    .estado-cancelado { background: #fee2e2; color: #991b1b; }
+    .admin-tab-bar { display: flex; gap: 4px; margin-bottom: 20px; }
+    .admin-tab { padding: 10px 20px; border-radius: var(--radius); background: var(--bg-card); border: 1px solid var(--border); font-size: 13px; font-weight: 600; color: var(--text-secondary); cursor: pointer; transition: var(--trans); }
+    .admin-tab:hover { border-color: var(--accent); color: var(--accent); }
+    .admin-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .admin-back { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: var(--radius); background: var(--bg-card); border: 1px solid var(--border); font-size: 13px; font-weight: 600; color: var(--text-secondary); text-decoration: none; transition: var(--trans); }
+    .admin-back:hover { border-color: var(--accent); color: var(--accent); }
+    .empty-state { text-align: center; padding: 64px 32px; color: var(--text-muted); }
+    .empty-state i { font-size: 48px; margin-bottom: 12px; display: block; opacity: .4; }
+    .admin-order-items { margin-top: 8px; font-size: 12px; color: var(--text-muted); }
+    .admin-order-items span { display: inline-block; margin-right: 8px; }
+    @media (max-width: 768px) {
+      .admin-table { font-size: 12px; }
+      .admin-table th, .admin-table td { padding: 10px 8px; }
+      .admin-stats { grid-template-columns: 1fr 1fr; }
+    }
+    .admin-loading { text-align: center; padding: 60px; color: var(--text-muted); }
+    .admin-loading i { font-size: 32px; display: block; margin-bottom: 12px; animation: spin 1s linear infinite; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .admin-error { text-align: center; padding: 60px; color: var(--error); }
+  </style>
+</head>
+<body>
+<div class="toast-container" id="toastContainer"></div>
+
+<nav id="navbar">
+  <div class="container">
+    <div class="nav-inner">
+      <img src="img/Logo moderno InnovaT.png" alt="InnovaTech" class="logo-img" />
+      <ul class="nav-links">
+        <li><a class="nav-link" href="index.html">Inicio</a></li>
+        <li><a class="nav-link" href="catalogo.html">Catálogo</a></li>
+        <li><a class="nav-link active" href="admin.html">Admin</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a class="cart-btn" href="carrito.html">
+          <i class='bx bx-cart'></i> Carrito
+          <span class="cart-count" id="cartCount">0</span>
+        </a>
+        <button class="hamburger" onclick="toggleMobile()" aria-label="Menú">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+    <div class="mobile-nav" id="mobileNav">
+      <a class="nav-link" href="index.html">Inicio</a>
+      <a class="nav-link" href="catalogo.html">Catálogo</a>
+      <a class="nav-link" href="admin.html">Admin</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container" style="padding-bottom:80px;">
+  <div class="admin-header">
+    <div>
+      <p class="section-label">Administración</p>
+      <h2 class="section-title">Panel de <span>Control</span></h2>
+      <div class="divider"></div>
+    </div>
+    <a class="admin-back" href="index.html"><i class='bx bx-arrow-back'></i> Volver a la tienda</a>
+  </div>
+
+  <!-- ====================================================
+       ESTADÍSTICAS — Dashboard (5 tarjetas)
+       ==================================================== -->
+  <div class="admin-stats" id="adminStats"></div>
+
+  <!-- ====================================================
+       TABS — Pedidos / Clientes
+       ==================================================== -->
+  <div class="admin-tab-bar">
+    <button class="admin-tab active" onclick="switchTab('pedidos', this)"><i class='bx bx-package'></i> Pedidos</button>
+    <button class="admin-tab" onclick="switchTab('clientes', this)"><i class='bx bx-group'></i> Clientes</button>
+  </div>
+
+  <!-- ====================================================
+       TABLA DE PEDIDOS — Cargada desde api/admin.php?action=pedidos
+       ==================================================== -->
+  <div class="admin-section" id="tabPedidos">
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Orden</th>
+            <th>Cliente</th>
+            <th>Email</th>
+            <th>Total</th>
+            <th>Pago</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+            <th>Productos</th>
+          </tr>
+        </thead>
+        <tbody id="ordersBody">
+          <tr><td colspan="8" class="admin-loading"><i class='bx bx-loader-circle'></i> Cargando pedidos...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ====================================================
+       TABLA DE CLIENTES — Cargada desde api/admin.php?action=clientes
+       ==================================================== -->
+  <div class="admin-section" id="tabClientes" style="display:none;">
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Activo</th>
+            <th>Registro</th>
+          </tr>
+        </thead>
+        <tbody id="clientesBody">
+          <tr><td colspan="6" class="admin-loading"><i class='bx bx-loader-circle'></i> Cargando clientes...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+  // ═════════════════════════════════════════════════════════
+  //  LÓGICA DEL PANEL ADMIN
+  //  ═════════════════════════════════════════════════════════
+
+  // ─── Verificación de acceso inmediata ──────────────────
+  // Si el usuario no es admin, lo redirige al home.
+  (function checkAdmin() {
+    const user = getUser();
+    if (!user || user.rol !== 'admin') {
+      showToast('Acceso denegado — Solo administradores', 'error');
+      setTimeout(() => { location.href = 'index.html'; }, 1500);
+    }
+  })();
+
+  // ─── Inicialización del panel ─────────────────────────
+  document.addEventListener('DOMContentLoaded', async () => {
+    updateCartCount();      // Badge del carrito
+    await loadStats();      // Cargar tarjetas de estadísticas
+    await loadOrders();     // Cargar tabla de pedidos
+    await loadClientes();   // Cargar tabla de clientes
+  });
+
+  // ─── Cambiar entre pestañas Pedidos / Clientes ────────
+  function switchTab(tab, btn) {
+    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tabPedidos').style.display   = tab === 'pedidos' ? 'block' : 'none';
+    document.getElementById('tabClientes').style.display  = tab === 'clientes' ? 'block' : 'none';
+  }
+
+  // ─── Cargar estadísticas del dashboard ────────────────
+  async function loadStats() {
+    try {
+      const user = getUser();
+      const res  = await fetch('api/admin.php?action=stats', {
+        headers: { 'X-Admin-Email': user?.email || '' }
+      });
+      const data = await res.json();
+      if (data.ok) {
+        const s = data.stats;
+        document.getElementById('adminStats').innerHTML = `
+          <div class="stat-card"><div class="num">${s.total_pedidos}</div><div class="label">Total Pedidos</div></div>
+          <div class="stat-card"><div class="num">$${s.ingresos.toFixed(2)}</div><div class="label">Ingresos Totales</div></div>
+          <div class="stat-card"><div class="num">${s.total_clientes}</div><div class="label">Clientes Registrados</div></div>
+          <div class="stat-card"><div class="num">${s.total_productos}</div><div class="label">Productos Activos</div></div>
+          <div class="stat-card"><div class="num">${s.pedidos_hoy}</div><div class="label">Pedidos Hoy</div></div>
+        `;
+      }
+    } catch (err) { console.error(err); }
+  }
+
+  // ─── Cargar lista de pedidos ──────────────────────────
+  async function loadOrders() {
+    try {
+      const user = getUser();
+      const res  = await fetch('api/admin.php?action=pedidos', {
+        headers: { 'X-Admin-Email': user?.email || '' }
+      });
+      const data = await res.json();
+      const tbody = document.getElementById('ordersBody');
+
+      if (!data.ok) {
+        tbody.innerHTML = `<tr><td colspan="8" class="admin-error"><i class='bx bx-error-circle'></i> ${data.error || 'Error'}</td></tr>`;
+        return;
+      }
+
+      if (!data.pedidos || data.pedidos.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><i class='bx bx-package'></i><p>No hay pedidos registrados aún.</p></div></td></tr>`;
+        return;
+      }
+
+      // Renderizar cada pedido en una fila de la tabla
+      tbody.innerHTML = data.pedidos.map(p => {
+        const estadoClass = 'estado-' + (p.estado === 'nuevo' ? 'nuevo' : p.estado === 'enviado' || p.estado === 'completado' ? 'enviado' : 'cancelado');
+        const itemsHtml = p.items ? p.items.map(i => `<span>${i.cantidad}x ${i.nombre}</span>`).join('') : '';
+        return `<tr>
+          <td><strong>${p.numero_orden}</strong></td>
+          <td>${p.nombre_cliente}</td>
+          <td>${p.email_cliente}</td>
+          <td><strong>$${parseFloat(p.total).toFixed(2)}</strong></td>
+          <td style="text-transform:capitalize;">${p.metodo_pago}</td>
+          <td><span class="estado ${estadoClass}">${p.estado}</span></td>
+          <td style="font-size:12px;color:var(--text-muted);">${p.creado_en}</td>
+          <td><div class="admin-order-items">${itemsHtml}</div></td>
+        </tr>`;
+      }).join('');
+    } catch (err) {
+      document.getElementById('ordersBody').innerHTML = `<tr><td colspan="8" class="admin-error"><i class='bx bx-error-circle'></i> Error de conexión</td></tr>`;
+      console.error(err);
+    }
+  }
+
+  // ─── Cargar lista de clientes registrados ─────────────
+  async function loadClientes() {
+    try {
+      const user = getUser();
+      const res  = await fetch('api/admin.php?action=clientes', {
+        headers: { 'X-Admin-Email': user?.email || '' }
+      });
+      const data = await res.json();
+      const tbody = document.getElementById('clientesBody');
+
+      if (!data.ok) {
+        tbody.innerHTML = `<tr><td colspan="6" class="admin-error">Error al cargar</td></tr>`;
+        return;
+      }
+
+      if (!data.clientes || data.clientes.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class='bx bx-group'></i><p>No hay clientes registrados.</p></div></td></tr>`;
+        return;
+      }
+
+      // Renderizar cada cliente en una fila de la tabla
+      tbody.innerHTML = data.clientes.map(c => `<tr>
+        <td>${c.id}</td>
+        <td><strong>${c.nombre}</strong></td>
+        <td>${c.email}</td>
+        <td><span class="estado ${c.rol === 'admin' ? 'estado-enviado' : ''}">${c.rol}</span></td>
+        <td>${c.activo ? '✓' : '✗'}</td>
+        <td style="font-size:12px;color:var(--text-muted);">${c.creado_en}</td>
+      </tr>`).join('');
+    } catch (err) {
+      document.getElementById('clientesBody').innerHTML = `<tr><td colspan="6" class="admin-error">Error de conexión</td></tr>`;
+    }
+  }
+</script>
+</body>
+</html>

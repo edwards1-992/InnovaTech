@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<!--
+  =============================================================
+  INNOVATECH — catalogo.html
+  Página de catálogo completo con:
+  - Filtros por categoría (radio buttons)
+  - Filtro por rango de precio
+  - Filtros "En stock" y "Solo ofertas"
+  - Búsqueda por texto
+  - Ordenamiento por precio / nombre
+  - Sin redirect: visitantes pueden navegar libremente
+  =============================================================
+-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InnovaTech — Catálogo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- =========================================================
+     NAVBAR
+     ========================================================= -->
+<nav id="navbar">
+  <div class="container">
+    <div class="nav-inner">
+      <img src="img/Logo moderno InnovaT.png" alt="InnovaTech Logo" class="logo-img" />
+      <ul class="nav-links">
+        <li><a class="nav-link" href="index.html">Inicio</a></li>
+        <li><a class="nav-link active" href="catalogo.html">Catálogo</a></li>
+        <li><a class="nav-link" href="contacto.html">Contacto</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a class="cart-btn" href="carrito.html">
+          <i class='bx bx-cart'></i> Carrito
+          <span class="cart-count" id="cartCount">0</span>
+        </a>
+        <button class="hamburger" onclick="toggleMobile()" aria-label="Menú">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+    <div class="mobile-nav" id="mobileNav">
+      <a class="nav-link" href="index.html">Inicio</a>
+      <a class="nav-link" href="catalogo.html">Catálogo</a>
+      <a class="nav-link" href="contacto.html">Contacto</a>
+      <a class="nav-link" href="carrito.html">Carrito</a>
+    </div>
+  </div>
+</nav>
+
+<!-- =========================================================
+     CATÁLOGO — Encabezado + sidebar filtros + grid productos
+     ========================================================= -->
+<div class="container" style="padding-top:108px;padding-bottom:80px;">
+  <div style="margin-bottom:24px;">
+    <p class="section-label">Todos los productos</p>
+    <h2 class="section-title">Catálogo <span>Completo</span></h2>
+    <div class="divider"></div>
+  </div>
+
+  <div class="catalog-layout">
+
+    <!-- SIDEBAR — Filtros laterales -->
+    <aside class="catalog-sidebar">
+      <!-- Filtro por categoría (radio buttons, renderizado por app.js) -->
+      <div class="filter-box">
+        <p class="filter-title">Categoría</p>
+        <div id="catFilters"></div>
+      </div>
+      <!-- Filtro por rango de precio -->
+      <div class="filter-box">
+        <p class="filter-title">Precio (USD)</p>
+        <div class="price-inputs">
+          <input type="number" class="price-input" id="priceMin" placeholder="Mín" min="0" oninput="filterProducts()">
+          <input type="number" class="price-input" id="priceMax" placeholder="Máx" min="0" oninput="filterProducts()">
+        </div>
+      </div>
+      <!-- Filtros de disponibilidad -->
+      <div class="filter-box">
+        <p class="filter-title">Disponibilidad</p>
+        <label class="filter-option">
+          <input type="checkbox" id="inStockOnly" onchange="filterProducts()"> En stock
+        </label>
+        <label class="filter-option">
+          <input type="checkbox" id="saleOnly" onchange="filterProducts()"> Solo ofertas
+        </label>
+      </div>
+    </aside>
+
+    <!-- ÁREA PRINCIPAL — Búsqueda + orden + grid -->
+    <div>
+      <!-- Barra de búsqueda y ordenamiento -->
+      <div class="catalog-header-bar">
+        <div class="search-bar">
+          <i class='bx bx-search'></i>
+          <input type="text" id="searchInput" placeholder="Buscar productos..." oninput="filterProducts()">
+        </div>
+        <select class="sort-select" id="sortSelect" onchange="filterProducts()">
+          <option value="default">Ordenar: Relevancia</option>
+          <option value="price-asc">Precio: Menor a Mayor</option>
+          <option value="price-desc">Precio: Mayor a Menor</option>
+          <option value="name-asc">Nombre: A–Z</option>
+        </select>
+      </div>
+      <!-- Contador y grid de productos (renderizados por app.js) -->
+      <div class="catalog-count" id="catalogCount" style="margin-bottom:20px;"></div>
+      <div class="products-grid" id="catalogGrid"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- =========================================================
+     FOOTER
+     ========================================================= -->
+<footer>
+  <div class="container">
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 InnovaTech. Todos los derechos reservados.</p>
+      <p class="footer-copy" style="display:flex;align-items:center;gap:6px;"><i class='bx bx-shield-quarter' style="color:var(--verde-ok)"></i> Pagos seguros · SSL</p>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+<script>
+  // ─── Inicialización del catálogo ────────────────────────
+  document.addEventListener('DOMContentLoaded', async () => {
+    updateCartCount();          // Actualizar badge del carrito
+    await loadProducts();       // Cargar productos desde la API
+
+    // Si el usuario vino desde Home con una categoría pre-seleccionada
+    // (clic en una categoría en index.html), aplicarla
+    const catGuardada = localStorage.getItem('filtroCategoria');
+    if (catGuardada) {
+      selectedCategory = catGuardada;
+      localStorage.removeItem('filtroCategoria');
+    }
+
+    renderCatalogFilters();     // Renderizar radio buttons de categoría
+    filterProducts();           // Aplicar filtros y mostrar productos
+  });
+
+  function toggleMobile() {
+    document.getElementById('mobileNav').classList.toggle('open');
+  }
+
+  // Función invocada desde las tarjetas de categoría en esta misma página
+  function goToCatalogCat(catName) {
+    selectedCategory = catName;
+    renderCatalogFilters();
+    filterProducts();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "build": {
+    "builder": "nixpacks",
+    "buildCommand": ""
+  },
+  "deploy": {
+    "startCommand": "bash start.sh",
+    "healthcheckPath": "/",
+    "restartPolicyType": "always"
+  }
+}

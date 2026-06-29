@@ -1,0 +1,175 @@
+/**
+ * ================================================================
+ *  INNOVATECH — login.css
+ *  Estilos del flip-panel de autenticación (login/registro).
+ *  Tema oscuro original ligeramente más claro que el inicial.
+ *
+ *  NOTA IMPORTANTE:
+ *    La clase .right-panel-active es la que usa script.js para
+ *    alternar entre login y registro. NO usar "show-register".
+ *    Buscar (Ctrl+F) "right-panel-active" en este archivo para
+ *    ver todos los estados del flip.
+ * ================================================================
+ */
+
+/* ─── Variables de color ──────────────────────────────────── */
+:root {
+  --bg-body:       #0a1628;
+  --bg-card:       #0f1f3d;
+  --bg-side:       #142848;
+  --bg-input:      #142848;
+  --text-primary:  #eef4ff;
+  --text-secondary:#9ab5d9;
+  --text-muted:    #6b8aaa;
+  --accent:        #0f6fff;
+  --accent-hover:  #3d8bff;
+  --accent-soft:   #00d4ff;
+  --border:        #1a3060;
+  --success:       #00e68a;
+  --error:         #ff3b5c;
+  --shadow:        0 4px 24px rgba(0,0,0,.35);
+  --shadow-lg:     0 20px 60px rgba(0,0,0,.5);
+  --font-display:  'Syne', sans-serif;
+  --font-body:     'DM Sans', sans-serif;
+  --radius:        10px;
+  --trans:         .6s ease-in-out;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+/* ─── Body ────────────────────────────────────────────────── */
+body {
+  font-family: var(--font-body);
+  background: var(--bg-body);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* ─── Fondo decorativo (grid + glows) ────────────────────── */
+.bg-grid { position: fixed; inset: 0; background-image: linear-gradient(rgba(15,111,255,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(15,111,255,.04) 1px, transparent 1px); background-size: 48px 48px; pointer-events: none; z-index: 0; }
+.bg-glow { position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; }
+.glow-1 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(15,111,255,.12), transparent 70%); top: -100px; left: -100px; }
+.glow-2 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(0,212,255,.08), transparent 70%); bottom: -80px; right: -80px; }
+
+/* ─── Logo superior ───────────────────────────────────────── */
+.top-logo { position: relative; z-index: 10; margin-bottom: 28px; }
+.top-logo img { height: 46px; width: auto; object-fit: contain; filter: drop-shadow(0 0 8px rgba(15,111,255,.3)); }
+.top-logo img:hover { filter: drop-shadow(0 0 14px rgba(0,212,255,.5)); }
+
+/* ─── Toast notifications ────────────────────────────────── */
+.toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+.toast { display: flex; align-items: center; gap: 10px; padding: 12px 20px; border-radius: var(--radius); font-size: 13px; font-weight: 600; box-shadow: var(--shadow-lg); animation: slideIn .3s ease both; }
+.toast-ok { background: var(--bg-card); border: 1px solid var(--success); color: var(--success); }
+.toast-err { background: var(--bg-card); border: 1px solid var(--error); color: var(--error); }
+.toast.hide { animation: slideOut .4s ease both; }
+
+@keyframes slideIn  { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
+
+/* ═══════════════════════════════════════════════════════════
+   FLIP PANEL — Contenedor principal
+   ═══════════════════════════════════════════════════════════ */
+
+.auth-container { position: relative; z-index: 5; width: min(780px, 95vw); min-height: 520px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; box-shadow: var(--shadow-lg); }
+
+/* ─── Paneles de formulario ──────────────────────────────── */
+.form-panel { position: absolute; top: 0; height: 100%; width: 50%; display: flex; align-items: center; justify-content: center; transition: all var(--trans); padding: 20px 0; overflow-y: auto; }
+.form-panel--login { left: 0; z-index: 2; opacity: 1; }
+.form-panel--register { left: 0; z-index: 1; opacity: 0; pointer-events: none; }
+
+/* ─── Estado activo (right-panel-active, NO show-register) ─── */
+.auth-container.right-panel-active .form-panel--login { transform: translateX(100%); opacity: 0; pointer-events: none; }
+.auth-container.right-panel-active .form-panel--register { transform: translateX(100%); opacity: 1; z-index: 5; pointer-events: all; animation: panelShow var(--trans); }
+
+@keyframes panelShow { 0%,49.99% { opacity: 0; z-index: 1; } 50%,100% { opacity: 1; z-index: 5; } }
+
+/* ─── Formularios ─────────────────────────────────────────── */
+form { width: 100%; padding: 0 40px; display: flex; flex-direction: column; align-items: center; }
+.form-logo-small { margin-bottom: 12px; }
+.form-logo-small img { height: 34px; width: auto; object-fit: contain; opacity: .8; }
+
+form h1 { font-family: var(--font-display); font-size: 22px; font-weight: 800; margin-bottom: 12px; text-align: center; }
+
+/* ─── Botones de redes sociales ──────────────────────────── */
+.social-row { display: flex; gap: 10px; margin-bottom: 14px; }
+.social-btn { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg-input); display: inline-flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 14px; text-decoration: none; transition: .25s; }
+.social-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; transform: translateY(-2px); }
+
+/* ─── Separador "o usa tu correo" ─────────────────────────── */
+.divider-text { font-size: 11px; color: var(--text-muted); margin-bottom: 14px; letter-spacing: .3px; text-align: center; }
+
+/* ─── Inputs con íconos ───────────────────────────────────── */
+.input-group { position: relative; width: 100%; margin-bottom: 10px; }
+.input-group > i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px; pointer-events: none; }
+.input-group input { width: 100%; padding: 11px 42px 11px 38px; background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text-primary); font-size: 13px; font-family: var(--font-body); transition: border-color .25s, box-shadow .25s; outline: none; }
+.input-group input::placeholder { color: var(--text-muted); }
+.input-group input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(15,111,255,.15); background: #1a3050; }
+
+/* ─── Botón para mostrar/ocultar contraseña ───────────────── */
+.toggle-pw { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); font-size: 13px; cursor: pointer; padding: 4px; transition: color .2s; }
+.toggle-pw:hover { color: var(--accent); }
+
+/* ─── Link "¿Olvidó su contraseña?" ───────────────────────── */
+.forgot-link { font-size: 12px; color: var(--text-muted); text-decoration: none; margin: 4px 0 14px; align-self: flex-end; transition: color .2s; }
+.forgot-link:hover { color: var(--accent-soft); }
+
+/* ─── Botón primario (enviar formulario) ──────────────────── */
+.btn-primary { width: 100%; padding: 12px; margin-top: 6px; border-radius: var(--radius); background: var(--accent); color: #fff; font-family: var(--font-display); font-size: 13px; font-weight: 700; letter-spacing: .5px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background .25s, transform .2s, box-shadow .25s; }
+.btn-primary:hover:not(:disabled) { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(15,111,255,.35); }
+.btn-primary:active:not(:disabled) { transform: scale(.97); }
+.btn-primary:disabled { opacity: .7; cursor: not-allowed; }
+
+/* ═══════════════════════════════════════════════════════════
+   OVERLAY — Panel decorativo con efecto glass
+   ═══════════════════════════════════════════════════════════ */
+
+.overlay-wrapper { position: absolute; top: 0; left: 50%; width: 50%; height: 100%; overflow: hidden; z-index: 100; transition: transform var(--trans); border-radius: 0 18px 18px 0; }
+.auth-container.right-panel-active .overlay-wrapper { transform: translateX(-100%); border-radius: 18px 0 0 18px; }
+.overlay-inner { position: relative; left: -100%; width: 200%; height: 100%; background: linear-gradient(135deg, #0f6fff 0%, #00d4ff 100%); transform: translateX(0); transition: transform var(--trans); display: flex; }
+.auth-container.right-panel-active .overlay-inner { transform: translateX(50%); }
+
+/* ─── Cada lado del overlay (login y register) ──────────── */
+.overlay-side { width: 50%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 40px 30px; flex-shrink: 0; }
+.overlay-content { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.overlay-content h2 { font-family: var(--font-display); font-size: 22px; font-weight: 800; color: #fff; line-height: 1.2; }
+.overlay-content p { font-size: 13px; color: rgba(255,255,255,.85); line-height: 1.6; max-width: 220px; margin: 0; }
+
+/* ─── Botón ghost del overlay ─────────────────────────────── */
+.btn-ghost { padding: 10px 28px; border-radius: 99px; background: transparent; border: 2px solid #fff; color: #fff; font-family: var(--font-display); font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: background .25s, color .25s, transform .2s; }
+.btn-ghost:hover { background: #fff; color: var(--accent); transform: translateY(-2px); }
+
+/* ─── Animación de entrada/salida del overlay ──────────────── */
+.overlay-side--left { transform: translateX(-20%); transition: transform var(--trans); }
+.auth-container.right-panel-active .overlay-side--left { transform: translateX(0); }
+.overlay-side--right { transform: translateX(0); transition: transform var(--trans); }
+.auth-container.right-panel-active .overlay-side--right { transform: translateX(20%); }
+
+/* ─── Ajuste responsive de visibilidad de paneles ─────────── */
+.auth-container.right-panel-active .form-panel--login  { display: block; }
+.auth-container.right-panel-active .form-panel--register { display: flex; }
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════ */
+
+@media (max-width: 600px) {
+  .auth-container { width: 95vw; min-height: auto; border-radius: 14px; }
+  .overlay-wrapper { display: none; }
+  .form-panel { width: 100%; position: relative; height: auto; padding: 32px 0; }
+  .form-panel--register { display: none; opacity: 1; pointer-events: all; transform: none !important; }
+  .auth-container.right-panel-active .form-panel--login  { display: none; transform: none; opacity: 1; }
+  .auth-container.right-panel-active .form-panel--register { display: flex; }
+  .mobile-switch { display: flex !important; }
+  form { padding: 0 24px; }
+}
+
+/* ─── Enlaces para cambiar entre login/registro en mobile ── */
+.mobile-switch { display: none; justify-content: center; gap: 10px; margin-top: 16px; font-size: 13px; color: var(--text-muted); }
+.mobile-switch a { color: var(--accent); text-decoration: none; font-weight: 600; }
+.mobile-switch a:hover { color: var(--accent-soft); }

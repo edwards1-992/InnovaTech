@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<!--
+  =============================================================
+  INNOVATECH — index.html (Página de inicio)
+  - Hero con promoción principal (RTX 5090)
+  - Cuadrícula de categorías
+  - Productos destacados
+  - Sin redirect forzoso: los visitantes navegan libremente
+  =============================================================
+-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InnovaTech — Inicio</title>
+  <!-- Fuentes: Syne (títulos) + DM Sans (cuerpo) desde Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <!-- Iconos Boxicons CDN -->
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <!-- Estilos compartidos con el resto del sitio -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<!-- Contenedor de toasts (notificaciones) inyectado por app.js -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- =========================================================
+     NAVBAR — Barra de navegación fija
+     ========================================================= -->
+<nav id="navbar">
+  <div class="container">
+    <div class="nav-inner">
+      <!-- Logo -->
+      <img src="img/Logo moderno InnovaT.png" alt="InnovaTech" class="logo-img" />
+      <!-- Links de navegación (escritorio) -->
+      <ul class="nav-links">
+        <li><a class="nav-link active" href="index.html">Inicio</a></li>
+        <li><a class="nav-link" href="catalogo.html">Catálogo</a></li>
+        <li><a class="nav-link" href="contacto.html">Contacto</a></li>
+        <li><a class="nav-link" href="carrito.html">Carrito</a></li>
+      </ul>
+      <!-- Acciones: carrito + hamburguesa -->
+      <div class="nav-actions">
+        <a class="cart-btn" href="carrito.html">
+          <i class='bx bx-cart'></i> Carrito
+          <span class="cart-count" id="cartCount">0</span>
+        </a>
+        <button class="hamburger" onclick="toggleMobile()" aria-label="Menú">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+    <!-- Navegación móvil (oculta, se despliega con toggleMobile) -->
+    <div class="mobile-nav" id="mobileNav">
+      <a class="nav-link" href="index.html">Inicio</a>
+      <a class="nav-link" href="catalogo.html">Catálogo</a>
+      <a class="nav-link" href="contacto.html">Contacto</a>
+      <a class="nav-link" href="carrito.html">Carrito</a>
+    </div>
+  </div>
+</nav>
+
+<!-- =========================================================
+     HERO — Sección principal con oferta destacada
+     ========================================================= -->
+<section class="hero" style="margin-top:68px;">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-content">
+        <div class="hero-eyebrow"><i class='bx bx-bolt-circle'></i> Semana de ofertas — Hasta 35% OFF</div>
+        <h1 class="hero-title">El Hardware que<br/><span class="accent">Potencia</span><br/>tu Futuro</h1>
+        <p class="hero-desc">Los mejores repuestos y accesorios para PC al mejor precio. Tarjetas gráficas, procesadores, RAM y mucho más — con garantía y envío rápido.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="catalogo.html"><i class='bx bx-store'></i> Ver Catálogo</a>
+          <a class="btn btn-outline" href="#home-featured"><i class='bx bx-trending-up'></i> Destacados</a>
+        </div>
+        <div class="hero-stats">
+          <div><div class="stat-num">2,400+</div><div class="stat-label">Productos</div></div>
+          <div><div class="stat-num">18k</div><div class="stat-label">Clientes Activos</div></div>
+          <div><div class="stat-num">4.9 ★</div><div class="stat-label">Calificación</div></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="promo-card">
+          <div class="promo-tag"><i class='bx bx-badge-check'></i> Oferta Especial</div>
+          <!-- Imagen del producto promocional del hero -->
+          <!-- Cambia gpu-rtx5090.jpg por el nombre de tu imagen real -->
+          <div class="promo-product-img" style="padding:0;overflow:hidden;">
+            <img src="img/productos/GTX 5090.jpg"
+                 alt="RTX 5090 Ti"
+                 style="width:100%;height:100%;object-fit:cover;border-radius:var(--radio);"
+                 onerror="this.outerHTML='<span style=&quot;font-size:72px;display:flex;align-items:center;justify-content:center;height:100%;&quot;>🎮</span>'" />
+          </div>
+          <div class="promo-name">RTX 5090 Ti — 32 GB GDDR7</div>
+          <p style="font-size:13px;color:var(--gris-texto);margin-bottom:4px;">NVIDIA GeForce · PCIe 5.0</p>
+          <div class="promo-price-row">
+            <span class="promo-price">$1,149</span>
+            <span class="promo-price-old">$1,499</span>
+            <span class="promo-discount">-23%</span>
+          </div>
+          <button class="add-btn" onclick="addToCart('gpu-rtx5090')" style="width:100%;justify-content:center;">
+            <i class='bx bx-cart-add'></i> Agregar al carrito
+          </button>
+        </div>
+        <div class="float-badge float-badge-1"><i class='bx bx-package'></i> Envío en 24 h</div>
+        <div class="float-badge float-badge-2"><i class='bx bx-shield-quarter'></i> Garantía 2 años</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     CATEGORÍAS — Cuadrícula renderizada por app.js
+     ========================================================= -->
+<section class="section-home" style="padding-top:60px;">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <p class="section-label">Explorar</p>
+        <h2 class="section-title">Categorías <span>Principales</span></h2>
+        <div class="divider"></div>
+      </div>
+    </div>
+    <!-- Las tarjetas de categorías se inyectan desde renderHomeCategories() -->
+    <div class="categories-grid" id="homeCategories"></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     PRODUCTOS DESTACADOS — Renderizado por app.js
+     ========================================================= -->
+<section class="section-home" id="home-featured">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <p class="section-label">Los más populares</p>
+        <h2 class="section-title">Productos <span>Destacados</span></h2>
+        <div class="divider"></div>
+      </div>
+      <a class="btn btn-ghost" href="catalogo.html">Ver todos <i class='bx bx-arrow-right'></i></a>
+    </div>
+    <!-- Los productos destacados se inyectan desde renderFeatured() -->
+    <div class="products-grid" id="featuredProducts"></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     FOOTER — Pie de página con enlaces e información
+     ========================================================= -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="img/Logo moderno InnovaT.png" alt="InnovaTech" class="footer-logo" />
+        <p>Tu destino de confianza para repuestos y accesorios de computadoras. Calidad garantizada y precios competitivos.</p>
+        <div class="social-row">
+          <a class="social-btn" href="#"><i class='bx bxl-facebook'></i></a>
+          <a class="social-btn" href="#"><i class='bx bxl-instagram'></i></a>
+          <a class="social-btn" href="#"><i class='bx bxl-twitter'></i></a>
+          <a class="social-btn" href="#"><i class='bx bxl-whatsapp'></i></a>
+          <a class="social-btn" href="#"><i class='bx bxl-youtube'></i></a>
+        </div>
+      </div>
+      <div>
+        <p class="footer-col-title">Tienda</p>
+        <ul class="footer-links">
+          <li><a class="footer-link" href="catalogo.html"><i class='bx bx-chevron-right'></i>Catálogo</a></li>
+          <li><a class="footer-link" href="catalogo.html"><i class='bx bx-chevron-right'></i>Ofertas</a></li>
+          <li><a class="footer-link" href="catalogo.html"><i class='bx bx-chevron-right'></i>Nuevos Ingresos</a></li>
+          <li><a class="footer-link" href="catalogo.html"><i class='bx bx-chevron-right'></i>Más Vendidos</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-title">Soporte</p>
+        <ul class="footer-links">
+          <li><a class="footer-link" href="contacto.html"><i class='bx bx-chevron-right'></i>Contacto</a></li>
+          <li><a class="footer-link" href="#"><i class='bx bx-chevron-right'></i>Preguntas Frecuentes</a></li>
+          <li><a class="footer-link" href="#"><i class='bx bx-chevron-right'></i>Devoluciones</a></li>
+          <li><a class="footer-link" href="#"><i class='bx bx-chevron-right'></i>Garantías</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-title">Empresa</p>
+        <ul class="footer-links">
+          <li><a class="footer-link" href="#"><i class='bx bx-chevron-right'></i>Sobre Nosotros</a></li>
+          <li><a class="footer-link" href="#"><i class='bx bx-chevron-right'></i>Blog Tech</a></li>
+          <li><a class="footer-link" href="#"><i class='bx bx-chevron-right'></i>Trabaja con Nosotros</a></li>
+          <li><a class="footer-link" href="#"><i class='bx bx-chevron-right'></i>Privacidad</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 InnovaTech. Todos los derechos reservados.</p>
+      <p class="footer-copy" style="display:flex;align-items:center;gap:6px;"><i class='bx bx-shield-quarter' style="color:var(--verde-ok)"></i> Pagos seguros · SSL</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Script compartido (app.js): productos, carrito, sesión, toasts -->
+<script src="app.js"></script>
+<script>
+  // ─── Inicialización de la página de inicio ──────────────
+  document.addEventListener('DOMContentLoaded', async () => {
+    updateCartCount();          // Mostrar badge del carrito
+    await loadProducts();       // Cargar catálogo desde la API
+    renderHomeCategories();     // Renderizar tarjetas de categorías
+    renderFeatured();           // Renderizar productos destacados
+  });
+
+  // ─── Navegar al catálogo filtrado por categoría ─────────
+  function goToCatalogCat(catName) {
+    localStorage.setItem('filtroCategoria', catName);
+    location.href = 'catalogo.html';
+  }
+
+  // ─── Toggle menú móvil ────────────────────────────────
+  function toggleMobile() {
+    document.getElementById('mobileNav').classList.toggle('open');
+  }
+</script>
+</body>
+</html>
