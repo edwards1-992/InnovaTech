@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<!--
+  =============================================================
+  INNOVATECH — login.html
+  Página de inicio de sesión y registro con flip-panel.
+  - Panel izquierdo: formulario de login
+  - Panel derecho: formulario de registro
+  - Overlay decorativo con botones ghost para cambiar entre modos
+  - Clase .right-panel-active controla la animación del flip
+  =============================================================
+-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InnovaTech — Iniciar Sesión / Registro</title>
+  <!-- Font Awesome 5 (iconos de redes sociales y ojo de contraseña) -->
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css'>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <!-- Estilos del flip-panel (login.css, NO style.css ni styles.css) -->
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+
+  <div class="bg-grid"></div>
+  <div class="bg-glow glow-1"></div>
+  <div class="bg-glow glow-2"></div>
+
+  <div id="toastContainer" style="position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;"></div>
+
+  <div class="auth-container" id="container">
+
+    <!-- LOGIN PANEL -->
+    <div class="form-panel form-panel--login">
+      <form id="formLogin" action="#" novalidate>
+        <h1>Iniciar Sesión</h1>
+        <div class="social-row">
+          <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-btn"><i class="fab fa-google-plus-g"></i></a>
+          <a href="#" class="social-btn"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+        <p class="divider-text">o usa tu correo electrónico</p>
+        <div class="input-group">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="loginEmail" placeholder="Email" />
+        </div>
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="loginPassword" placeholder="Contraseña" />
+          <button type="button" class="toggle-pw" onclick="togglePassword('loginPassword', this)"><i class="fas fa-eye"></i></button>
+        </div>
+        <a href="#" class="forgot-link">¿Olvidó su contraseña?</a>
+        <button type="submit" id="btnLogin" class="btn-primary">
+          <span class="btn-txt">Iniciar Sesión</span>
+          <span class="btn-load" style="display:none"><i class="fas fa-spinner fa-spin"></i></span>
+        </button>
+        <p class="mobile-switch">
+          ¿No tienes cuenta? <a href="#" id="mobileGoRegister">Regístrate</a>
+        </p>
+      </form>
+    </div>
+
+    <!-- REGISTER PANEL -->
+    <div class="form-panel form-panel--register">
+      <form id="formRegistro" action="#" novalidate>
+        <h1>Crear Cuenta</h1>
+        <div class="social-row">
+          <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-btn"><i class="fab fa-google-plus-g"></i></a>
+          <a href="#" class="social-btn"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+        <p class="divider-text">o usa tu correo electrónico</p>
+        <div class="input-group">
+          <i class="fas fa-user"></i>
+          <input type="text" id="regNombre" placeholder="Nombre completo" />
+        </div>
+        <div class="input-group">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="regEmail" placeholder="Email" />
+        </div>
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="regPassword" placeholder="Contraseña (mín. 6 caracteres)" />
+          <button type="button" class="toggle-pw" onclick="togglePassword('regPassword', this)"><i class="fas fa-eye"></i></button>
+        </div>
+        <button type="submit" id="btnReg" class="btn-primary">
+          <span class="btn-txt">Registrarse</span>
+          <span class="btn-load" style="display:none"><i class="fas fa-spinner fa-spin"></i></span>
+        </button>
+        <p class="mobile-switch">
+          ¿Ya tienes cuenta? <a href="#" id="mobileGoLogin">Inicia Sesión</a>
+        </p>
+      </form>
+    </div>
+
+    <!-- OVERLAY -->
+    <div class="overlay-wrapper">
+      <div class="overlay-inner">
+        <div class="overlay-side overlay-side--left">
+          <div class="overlay-content">
+            <h2>¡Bienvenido de nuevo!</h2>
+            <p>Para mantenerte conectado con nosotros, inicia sesión con tu cuenta.</p>
+            <button class="btn-ghost" id="signIn">Iniciar Sesión</button>
+          </div>
+        </div>
+        <div class="overlay-side overlay-side--right">
+          <div class="overlay-content">
+            <h2>¡Hola, amigo!</h2>
+            <p>Regístrate y empieza a comprar los mejores productos tecnológicos.</p>
+            <button class="btn-ghost" id="signUp">Registrarse</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ─── Limpiar autofill del navegador al cargar ──────────
+    // Evita que el navegador rellene automáticamente los
+    // campos con credenciales guardadas.
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('formRegistro').reset();
+      document.getElementById('formLogin').reset();
+      setTimeout(function() {
+        document.querySelectorAll('#formRegistro input, #formLogin input').forEach(function(el) {
+          if (el.value) el.value = '';
+        });
+      }, 100);
+    });
+
+    // ─── Mostrar/ocultar contraseña (toggle ojo) ──────────
+    function togglePassword(inputId, btn) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+      } else {
+        input.type = 'password';
+        btn.innerHTML = '<i class="fas fa-eye"></i>';
+      }
+    }
+  </script>
+  <!-- Script del flip-panel (script.js, NO app.js) -->
+  <script src="script.js"></script>
+</body>
+</html>

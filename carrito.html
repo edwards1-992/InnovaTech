@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<!--
+  =============================================================
+  INNOVATECH — carrito.html
+  Página del carrito de compras.
+  - Visitantes: pueden ver el carrito pero no finalizar la
+    compra (irACheckout redirige al login)
+  - Clientes: pueden modificar cantidades, eliminar items y
+    proceder al checkout
+  - Carrito persistente en localStorage
+  =============================================================
+-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InnovaTech — Carrito</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="toast-container" id="toastContainer"></div>
+
+<nav id="navbar">
+  <div class="container">
+    <div class="nav-inner">
+      <img src="img/Logo moderno InnovaT.png" alt="InnovaTech Logo" class="logo-img" />
+      <ul class="nav-links">
+        <li><a class="nav-link" href="index.html">Inicio</a></li>
+        <li><a class="nav-link" href="catalogo.html">Catálogo</a></li>
+        <li><a class="nav-link" href="contacto.html">Contacto</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a class="cart-btn" href="carrito.html" style="background:rgba(15,111,255,.25);color:#fff;">
+          <i class='bx bx-cart'></i> Carrito
+          <span class="cart-count" id="cartCount">0</span>
+        </a>
+        <button class="hamburger" onclick="toggleMobile()" aria-label="Menú">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+    <div class="mobile-nav" id="mobileNav">
+      <a class="nav-link" href="index.html">Inicio</a>
+      <a class="nav-link" href="catalogo.html">Catálogo</a>
+      <a class="nav-link" href="contacto.html">Contacto</a>
+      <a class="nav-link" href="carrito.html">Carrito</a>
+    </div>
+  </div>
+</nav>
+
+<!-- =========================================================
+     CARRITO — Contenido dinámico + resumen
+     ========================================================= -->
+<div class="container" style="padding-top:108px;padding-bottom:80px;">
+  <div style="margin-bottom:32px;">
+    <p class="section-label">Mi compra</p>
+    <h2 class="section-title">Carrito de <span>Compras</span></h2>
+    <div class="divider"></div>
+  </div>
+
+  <div class="cart-layout">
+    <div>
+      <!-- Items del carrito (renderizados por renderCart()) -->
+      <div class="cart-items-box" id="cartItemsBox"></div>
+      <div style="margin-top:16px;">
+        <a class="btn btn-ghost" href="catalogo.html" style="font-size:14px;">
+          <i class='bx bx-arrow-left'></i> Seguir comprando
+        </a>
+      </div>
+    </div>
+    <!-- Resumen del pedido (subtotal, envío, total) -->
+    <div class="cart-summary" id="cartSummary"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 InnovaTech. Todos los derechos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+<script>
+  // ═════════════════════════════════════════════════════════
+  //  LÓGICA DEL CARRITO
+  //  ═════════════════════════════════════════════════════════
+
+  // ─── Inicialización ────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    updateCartCount();   // Actualizar badge en navbar
+    renderCart();        // Renderizar items y resumen
+  });
+
+  // ─── Ir al checkout (con restricción para visitantes) ──
+  function irACheckout() {
+    if (cart.length === 0) {
+      showToast('Tu carrito está vacío', 'error');
+      return;
+    }
+    // Los visitantes no pueden comprar — redirigir al login
+    if (!getUser()) {
+      showToast('Debes iniciar sesión para finalizar la compra', 'error');
+      localStorage.setItem('redirectAfterLogin', location.href);
+      setTimeout(() => { location.href = 'login.html'; }, 1200);
+      return;
+    }
+    location.href = 'checkout.html';
+  }
+
+  function toggleMobile() {
+    document.getElementById('mobileNav').classList.toggle('open');
+  }
+
+  // ─── Renderizar items del carrito ─────────────────────
+  function renderCart() {
+    const itemsBox   = document.getElementById('cartItemsBox');
+    const summaryBox = document.getElementById('cartSummary');
+
+    // Carrito vacío: mostrar estado vacío con enlace al catálogo
+    if (cart.length === 0) {
+      itemsBox.innerHTML = `
+        <div class="cart-empty">
+          <i class='bx bx-cart-x'></i>
+          <h3>Tu carrito está vacío</h3>
+          <p>Agrega productos desde el catálogo para comenzar.</p>
+          <a class="btn btn-primary" href="catalogo.html" style="margin-top:20px;display:inline-flex;">
+            <i class='bx bx-store'></i> Explorar Catálogo
+          </a>
+        </div>
+      `;
+      summaryBox.innerHTML = '<div class="summary-title">Resumen</div><p style="color:var(--gris-texto);font-size:14px;">No hay productos en el carrito.</p>';
+      return;
+    }
+
+    // Renderizar cada item con imagen, nombre, controles de cantidad y precio
+    itemsBox.innerHTML = cart.map(item => `
+      <div class="cart-item">
+        <div class="cart-item-img" style="overflow:hidden;padding:0;">
+          ${item.imagen
+            ? `<img src="img/productos/${item.imagen}"
+                    alt="${item.name}"
+                    style="width:100%;height:100%;object-fit:cover;border-radius:var(--radio);"
+                    onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+               <span style="display:none;width:100%;height:100%;align-items:center;
+                            justify-content:center;font-size:32px;">${item.emoji}</span>`
+            : `<span style="font-size:32px;">${item.emoji}</span>`
+          }
+        </div>
+        <div class="cart-item-info">
+          <div class="cart-item-name">${item.name}</div>
+          <div class="cart-item-cat">${item.cat}</div>
+          <div class="qty-ctrl">
+            <button class="qty-btn" onclick="changeQty('${item.id}', -1)"><i class='bx bx-minus'></i></button>
+            <div class="qty-num">${item.qty}</div>
+            <button class="qty-btn" onclick="changeQty('${item.id}', 1)"><i class='bx bx-plus'></i></button>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+          <div class="cart-item-price">$${(item.price * item.qty).toFixed(2)}</div>
+          <button class="remove-btn" onclick="removeFromCart('${item.id}')"><i class='bx bx-trash'></i></button>
+        </div>
+      </div>
+    `).join('');
+
+    // Calcular totales
+    const subtotal = cart.reduce((a, i) => a + i.price * i.qty, 0);
+    const envio    = subtotal >= 500 ? 0 : 15;
+    const total    = subtotal + envio;
+
+    // Resumen del pedido
+    summaryBox.innerHTML = `
+      <div class="summary-title">Resumen del Pedido</div>
+      <div class="summary-row"><span class="label">Subtotal (${cart.reduce((a,i)=>a+i.qty,0)} artículos)</span><span class="value">$${subtotal.toFixed(2)}</span></div>
+      <div class="summary-row"><span class="label">Envío</span><span class="value" style="color:${envio===0?'var(--verde-ok)':'inherit'}">${envio===0?'Gratis 🎉':'$'+envio.toFixed(2)}</span></div>
+      ${envio>0?'<p style="font-size:12px;color:var(--gris-texto);margin-bottom:8px;">Envío gratis en pedidos mayores a $500</p>':''}
+      <div class="summary-total"><span class="label">Total</span><span class="value">$${total.toFixed(2)}</span></div>
+      <button class="checkout-cta" onclick="irACheckout()"><i class='bx bx-lock-alt'></i> Finalizar Compra</button>
+      <p style="font-size:11px;color:var(--gris-texto);text-align:center;margin-top:12px;">
+        <i class='bx bx-shield-quarter' style="color:var(--verde-ok);vertical-align:-2px;"></i>
+        Transacción segura · Datos protegidos
+      </p>
+    `;
+  }
+
+  // ─── Modificar cantidad (delta: +1 o -1) ──────────────
+  function changeQty(id, delta) {
+    const item = cart.find(i => i.id === id);
+    if (!item) return;
+    item.qty = Math.max(1, item.qty + delta);
+    saveCart();      // Persistir en localStorage
+    renderCart();    // Re-renderizar
+  }
+
+  // ─── Eliminar item del carrito ────────────────────────
+  function removeFromCart(id) {
+    cart = cart.filter(i => i.id !== id);
+    saveCart();
+    renderCart();
+    showToast('Producto eliminado del carrito', 'error');
+  }
+</script>
+</body>
+</html>

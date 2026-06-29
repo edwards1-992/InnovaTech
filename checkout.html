@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<!--
+  =============================================================
+  INNOVATECH — checkout.html
+  Página de finalización de compra.
+  - Solo accesible para usuarios logueados (app.js placeOrder
+    verifica sesión)
+  - Redirige al carrito si está vacío
+  - Formulario: datos personales, dirección, método de pago
+  - Modal de confirmación tras pedido exitoso
+  =============================================================
+-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InnovaTech — Checkout</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- =========================================================
+     MODAL DE CONFIRMACIÓN — Se muestra tras pedido exitoso
+     ========================================================= -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal-box">
+    <div class="modal-icon"><i class='bx bx-check'></i></div>
+    <h2 class="modal-title">¡Pedido Confirmado!</h2>
+    <p class="modal-desc" id="modalDesc">Tu pedido ha sido procesado exitosamente. ¡Gracias por elegir InnovaTech!</p>
+    <a class="btn btn-primary" href="index.html" style="width:100%;justify-content:center;">
+      <i class='bx bx-home'></i> Volver al Inicio
+    </a>
+  </div>
+</div>
+
+<nav id="navbar">
+  <div class="container">
+    <div class="nav-inner">
+      <img src="img/Logo moderno InnovaT.png" alt="InnovaTech Logo" class="logo-img" />
+      <ul class="nav-links">
+        <li><a class="nav-link" href="index.html">Inicio</a></li>
+        <li><a class="nav-link" href="catalogo.html">Catálogo</a></li>
+        <li><a class="nav-link" href="contacto.html">Contacto</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a class="cart-btn" href="carrito.html">
+          <i class='bx bx-cart'></i> Carrito
+          <span class="cart-count" id="cartCount">0</span>
+        </a>
+        <button class="hamburger" onclick="toggleMobile()" aria-label="Menú">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+    <div class="mobile-nav" id="mobileNav">
+      <a class="nav-link" href="index.html">Inicio</a>
+      <a class="nav-link" href="catalogo.html">Catálogo</a>
+      <a class="nav-link" href="contacto.html">Contacto</a>
+      <a class="nav-link" href="carrito.html">Carrito</a>
+    </div>
+  </div>
+</nav>
+
+<!-- =========================================================
+     CHECKOUT — Formulario de datos + resumen del pedido
+     ========================================================= -->
+<div class="container" style="padding-top:108px;padding-bottom:80px;">
+  <div style="margin-bottom:32px;">
+    <p class="section-label">Finalizar compra</p>
+    <h2 class="section-title">Datos del <span>Pedido</span></h2>
+    <div class="divider"></div>
+  </div>
+
+  <div class="checkout-layout">
+
+    <!-- FORMULARIO — Datos personales, dirección, pago -->
+    <div>
+      <!-- Datos personales -->
+      <div class="form-card">
+        <div class="form-card-title"><i class='bx bx-user-circle'></i> Datos Personales</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nombre *</label>
+            <input type="text" class="form-input" id="chkNombre" placeholder="Tu nombre completo">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Teléfono *</label>
+            <input type="tel" class="form-input" id="chkTelefono" placeholder="+505 0000 0000">
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label class="form-label">Correo Electrónico *</label>
+            <input type="email" class="form-input" id="chkEmail" placeholder="tu@correo.com">
+          </div>
+        </div>
+      </div>
+
+      <!-- Dirección de entrega -->
+      <div class="form-card">
+        <div class="form-card-title"><i class='bx bx-map'></i> Dirección de Entrega</div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label class="form-label">Dirección *</label>
+            <input type="text" class="form-input" id="chkDireccion" placeholder="Calle, número, barrio...">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Ciudad</label>
+            <input type="text" class="form-input" id="chkCiudad" placeholder="Managua">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Departamento</label>
+            <input type="text" class="form-input" id="chkDpto" placeholder="Managua">
+          </div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label class="form-label">Notas adicionales</label>
+            <textarea class="form-input" id="chkNotas" placeholder="Referencias de entrega..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Método de pago (efectivo / transferencia / tarjeta) -->
+      <div class="form-card">
+        <div class="form-card-title"><i class='bx bx-credit-card'></i> Método de Pago</div>
+        <div class="payment-methods">
+          <div class="payment-method selected" data-method="efectivo" onclick="selectPayment(this)">
+            <i class='bx bx-money'></i><span>Efectivo</span>
+          </div>
+          <div class="payment-method" data-method="transferencia" onclick="selectPayment(this)">
+            <i class='bx bx-transfer'></i><span>Transferencia</span>
+          </div>
+          <div class="payment-method" data-method="tarjeta" onclick="selectPayment(this)">
+            <i class='bx bx-credit-card-front'></i><span>Tarjeta</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESUMEN DEL PEDIDO (renderizado por renderOrderSummary) -->
+    <div class="order-summary" id="orderSummaryBox"></div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2025 InnovaTech. Todos los derechos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+<script>
+  // ═════════════════════════════════════════════════════════
+  //  LÓGICA DEL CHECKOUT
+  //  ═════════════════════════════════════════════════════════
+
+  // ─── Inicialización ────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    updateCartCount();
+    // Si el carrito está vacío, redirigir de vuelta al carrito
+    if (cart.length === 0) {
+      location.href = 'carrito.html';
+      return;
+    }
+    renderOrderSummary();
+  });
+
+  function toggleMobile() {
+    document.getElementById('mobileNav').classList.toggle('open');
+  }
+
+  // ─── Seleccionar método de pago ───────────────────────
+  function selectPayment(el) {
+    document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedPayment = el.dataset.method;
+  }
+
+  // ─── Renderizar resumen del pedido en la sidebar ──────
+  function renderOrderSummary() {
+    const box      = document.getElementById('orderSummaryBox');
+    const subtotal = cart.reduce((a, i) => a + i.price * i.qty, 0);
+    const envio    = subtotal >= 500 ? 0 : 15;
+    const total    = subtotal + envio;
+
+    box.innerHTML = `
+      <div class="summary-title">Tu Pedido</div>
+      ${cart.map(item => `
+        <div class="order-item">
+          <div class="order-item-img" style="overflow:hidden;padding:0;">
+            ${item.imagen
+              ? `<img src="img/productos/${item.imagen}"
+                      alt="${item.name}"
+                      style="width:100%;height:100%;object-fit:cover;border-radius:8px;"
+                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+                 <span style="display:none;width:100%;height:100%;align-items:center;
+                              justify-content:center;font-size:20px;">${item.emoji}</span>`
+              : `<span style="font-size:20px;">${item.emoji}</span>`
+            }
+          </div>
+          <div class="order-item-name">${item.name}<div class="order-item-qty">Cant: ${item.qty}</div></div>
+          <div class="order-item-price">$${(item.price*item.qty).toFixed(2)}</div>
+        </div>
+      `).join('')}
+      <div class="summary-row" style="margin-top:16px;"><span class="label">Subtotal</span><span class="value">$${subtotal.toFixed(2)}</span></div>
+      <div class="summary-row"><span class="label">Envío</span><span class="value">${envio===0?'Gratis':'$'+envio.toFixed(2)}</span></div>
+      <div class="summary-total"><span class="label">Total</span><span class="value">$${total.toFixed(2)}</span></div>
+      <button class="place-order-btn" onclick="placeOrder()">
+        <i class='bx bx-check-circle'></i> Confirmar Pedido
+      </button>
+    `;
+  }
+
+  // ─── Sobrescribir placeOrder de app.js ────────────────
+  // Esta versión incluye el modal de confirmación específico
+  // de la página de checkout.
+  async function placeOrder() {
+    // Leer datos del formulario
+    const nombre    = document.getElementById('chkNombre')?.value.trim();
+    const tel       = document.getElementById('chkTelefono')?.value.trim();
+    const email     = document.getElementById('chkEmail')?.value.trim();
+    const direccion = document.getElementById('chkDireccion')?.value.trim();
+    const ciudad    = document.getElementById('chkCiudad')?.value.trim();
+    const dpto      = document.getElementById('chkDpto')?.value.trim();
+    const notas     = document.getElementById('chkNotas')?.value.trim();
+
+    if (!nombre || !tel || !email || !direccion) {
+      showToast('Completa todos los campos requeridos', 'error'); return;
+    }
+    if (cart.length === 0) {
+      showToast('Tu carrito está vacío', 'error'); return;
+    }
+
+    try {
+      const res  = await fetch('api/pedidos.php', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cliente: { nombre, email, telefono: tel, direccion,
+                     ciudad, departamento: dpto, notas,
+                     metodoPago: selectedPayment },
+          items: cart
+        })
+      });
+      const data = await res.json();
+
+      if (data.ok) {
+        cart = []; saveCart();
+        document.getElementById('modalDesc').textContent =
+          'Pedido ' + data.numero_orden + ' confirmado. Total: $' + data.total.toFixed(2) + '. ¡Gracias por elegir InnovaTech!';
+        document.getElementById('successModal').classList.add('open');
+      } else {
+        showToast(data.error || 'Error al procesar el pedido', 'error');
+      }
+    } catch (err) {
+      showToast('Error de conexión — verifica que XAMPP esté corriendo', 'error');
+      console.error(err);
+    }
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+{
+  "name": "innovatech/web",
+  "description": "InnovaTech - Tienda de repuestos y accesorios para PC",
+  "require": {
+    "php": ">=8.0"
+  }
+}

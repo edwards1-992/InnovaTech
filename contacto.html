@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<!--
+  =============================================================
+  INNOVATECH — contacto.html
+  Página pública de contacto.
+  - Visitantes y clientes pueden enviar mensajes sin login
+  - Muestra información de la tienda (dirección, teléfono,
+    horario, redes sociales)
+  - El formulario envía POST a api/contacto.php
+  =============================================================
+-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InnovaTech — Contacto</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="toast-container" id="toastContainer"></div>
+
+<nav id="navbar">
+  <div class="container">
+    <div class="nav-inner">
+      <img src="img/Logo moderno InnovaT.png" alt="InnovaTech Logo" class="logo-img" />
+      <ul class="nav-links">
+        <li><a class="nav-link" href="index.html">Inicio</a></li>
+        <li><a class="nav-link" href="catalogo.html">Catálogo</a></li>
+        <li><a class="nav-link active" href="contacto.html">Contacto</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a class="cart-btn" href="carrito.html">
+          <i class='bx bx-cart'></i> Carrito
+          <span class="cart-count" id="cartCount">0</span>
+        </a>
+        <button class="hamburger" onclick="toggleMobile()" aria-label="Menú">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+    <div class="mobile-nav" id="mobileNav">
+      <a class="nav-link" href="index.html">Inicio</a>
+      <a class="nav-link" href="catalogo.html">Catálogo</a>
+      <a class="nav-link" href="contacto.html">Contacto</a>
+      <a class="nav-link" href="carrito.html">Carrito</a>
+    </div>
+  </div>
+</nav>
+
+<!-- =========================================================
+     CONTACTO — Información de la tienda + formulario
+     ========================================================= -->
+<div class="container" style="padding-top:108px;padding-bottom:80px;">
+  <div style="margin-bottom:48px;text-align:center;">
+    <p class="section-label">¿Necesitas ayuda?</p>
+    <h2 class="section-title">Contáctanos <span>Hoy</span></h2>
+    <div class="divider" style="margin:16px auto 0;"></div>
+    <p style="font-size:15px;color:var(--gris-texto);margin-top:16px;max-width:500px;margin-inline:auto;">
+      Disponibles de lunes a sábado. Te responderemos en menos de 24 horas.
+    </p>
+  </div>
+
+  <div class="contact-layout">
+
+    <!-- INFO TIENDA — Datos de contacto estáticos -->
+    <div class="contact-info-card">
+      <p class="footer-col-title" style="margin-bottom:24px;">Información de Contacto</p>
+
+      <!-- Dirección -->
+      <div class="contact-item">
+        <div class="contact-icon"><i class='bx bx-map-pin'></i></div>
+        <div>
+          <p class="contact-detail-label">Dirección</p>
+          <p class="contact-detail-value">Centro Comercial Metrocentro,<br/>Managua, Nicaragua</p>
+        </div>
+      </div>
+
+      <!-- Teléfono -->
+      <div class="contact-item">
+        <div class="contact-icon"><i class='bx bx-phone'></i></div>
+        <div>
+          <p class="contact-detail-label">Teléfono</p>
+          <p class="contact-detail-value">+505 2211-1621<br/>+505 8781-4437 (WhatsApp)</p>
+        </div>
+      </div>
+
+      <!-- Correo electrónico -->
+      <div class="contact-item">
+        <div class="contact-icon"><i class='bx bx-envelope'></i></div>
+        <div>
+          <p class="contact-detail-label">Correo</p>
+          <p class="contact-detail-value">info@innovatech.com.ni<br/>soporte@innovatech.com.ni</p>
+        </div>
+      </div>
+
+      <!-- Horario -->
+      <div class="contact-item" style="margin-bottom:0;">
+        <div class="contact-icon"><i class='bx bx-time'></i></div>
+        <div>
+          <p class="contact-detail-label">Horario</p>
+          <p class="contact-detail-value">Lunes – Viernes: 8:00 AM – 5:00 PM<br/>Sábado: 8:00 AM – 12:00 MD</p>
+        </div>
+      </div>
+
+      <!-- Redes sociales -->
+      <div class="social-row">
+        <a class="social-btn" href="#"><i class='bx bxl-facebook'></i></a>
+        <a class="social-btn" href="#"><i class='bx bxl-instagram'></i></a>
+        <a class="social-btn" href="#"><i class='bx bxl-whatsapp'></i></a>
+        <a class="social-btn" href="#"><i class='bx bxl-twitter'></i></a>
+      </div>
+    </div>
+
+    <!-- FORMULARIO DE CONTACTO — Enviado por sendContact() -->
+    <div class="contact-form-card">
+      <div class="form-card-title" style="margin-bottom:24px;">
+        <i class='bx bx-message-rounded-edit'></i> Envíanos un Mensaje
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Nombre *</label>
+          <input type="text" class="form-input" id="ctcNombre" placeholder="Tu nombre">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Teléfono</label>
+          <input type="tel" class="form-input" id="ctcTel" placeholder="+505 ...">
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label class="form-label">Correo Electrónico *</label>
+          <input type="email" class="form-input" id="ctcEmail" placeholder="tu@correo.com">
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label class="form-label">Asunto</label>
+          <input type="text" class="form-input" id="ctcAsunto" placeholder="¿En qué te podemos ayudar?">
+        </div>
+      </div>
+      <div class="form-row full" style="margin-bottom:24px;">
+        <div class="form-group">
+          <label class="form-label">Mensaje *</label>
+          <textarea class="form-input" id="ctcMsg" placeholder="Escribe tu mensaje aquí..." style="min-height:140px;"></textarea>
+        </div>
+      </div>
+      <button class="place-order-btn" onclick="sendContact()">
+        <i class='bx bx-send'></i> Enviar Mensaje
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 InnovaTech. Todos los derechos reservados.</p>
+      <p class="footer-copy" style="display:flex;align-items:center;gap:6px;"><i class='bx bx-shield-quarter' style="color:var(--verde-ok)"></i> Pagos seguros · SSL</p>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+<script>
+  // Contact page is public — visitors can send messages
+  document.addEventListener('DOMContentLoaded', () => {
+    updateCartCount();
+  });
+
+  function toggleMobile() {
+    document.getElementById('mobileNav').classList.toggle('open');
+  }
+</script>
+</body>
+</html>
