@@ -9,7 +9,7 @@
 --  3. Verifica que el admin puede iniciar sesión en login.html
 -- ==============================================================
 
-USE innovatech;
+USE railway;
 
 -- ==============================================================
 --  1. Añadir columna 'rol' a la tabla clientes

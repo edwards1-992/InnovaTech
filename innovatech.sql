@@ -18,12 +18,12 @@
 --  ⚠ ADVERTENCIA: Esto borra cualquier dato existente en la
 --    base de datos 'innovatech'.
 -- ==============================================================
-DROP DATABASE IF EXISTS innovatech;
-CREATE DATABASE innovatech
+DROP DATABASE IF EXISTS railway;
+CREATE DATABASE railway
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-USE innovatech;
+USE railway;
 
 -- ==============================================================
 -- TABLA 1: categorias
