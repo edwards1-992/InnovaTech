@@ -16,23 +16,24 @@
  * Requisito: XAMPP con MySQL corriendo en localhost, root sin pass
  */
 
-// ─── Modo depuración: muestra errores PHP en pantalla ─────────
-// Al publicar en producción, cambiar a 0 o comentar estas líneas
-// ─── Modo producción: desactivar en Railway ──────────────────
-if (getenv('RAILWAY_ENVIRONMENT')) {
-    ini_set('display_errors', 0);
-    error_reporting(0);
-} else {
-    ini_set('display_errors', 1);
-    error_reporting(E_ALL);
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+// ─── Leer variables de entorno (Railway las inyecta) ─────────
+// Probamos getenv() y $_ENV por si alguna no está disponible
+function env($key, $default = null) {
+    $val = getenv($key);
+    if ($val !== false && $val !== '') return $val;
+    if (isset($_ENV[$key]) && $_ENV[$key] !== '') return $_ENV[$key];
+    if (isset($_SERVER[$key]) && $_SERVER[$key] !== '') return $_SERVER[$key];
+    return $default;
 }
 
 // ─── Constantes de conexión ──────────────────────────────────
-// Railway inyecta automáticamente MYSQL_* al añadir un plugin MySQL
-define('DB_HOST',    getenv('MYSQL_HOST')    ?: 'localhost');
-define('DB_NAME',    getenv('MYSQL_DATABASE') ?: 'innovatech');
-define('DB_USER',    getenv('MYSQL_USER')     ?: 'root');
-define('DB_PASS',    getenv('MYSQL_PASSWORD') ?: '');
+define('DB_HOST',    env('MYSQL_HOST')    ?: env('MYSQL_URL') ?: 'localhost');
+define('DB_NAME',    env('MYSQL_DATABASE') ?: env('MYSQL_DB') ?: 'innovatech');
+define('DB_USER',    env('MYSQL_USER')     ?: 'root');
+define('DB_PASS',    env('MYSQL_PASSWORD') ?: env('MYSQL_ROOT_PASSWORD') ?: '');
 define('DB_CHARSET', 'utf8mb4');
 
 // ─── Cabeceras HTTP (CORS) para comunicación con JS ──────────
@@ -77,9 +78,15 @@ function conectar(): PDO {
         http_response_code(500);
         echo json_encode([
             'error'   => 'Error de conexión a MySQL',
-            'detalle' => $e->getMessage()
+            'detalle' => $e->getMessage(),
+            'debug'   => [
+                'host'   => DB_HOST,
+                'db'     => DB_NAME,
+                'user'   => DB_USER,
+                'has_pw' => DB_PASS !== '',
+            ]
         ]);
-        exit();  // No podemos continuar sin BD
+        exit();
     }
 
     return $pdo;
