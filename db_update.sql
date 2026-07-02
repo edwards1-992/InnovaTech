@@ -49,11 +49,23 @@ ON DUPLICATE KEY UPDATE nombre = VALUES(nombre), rol = VALUES(rol);
 --
 --  Productos con imagen real disponible:
 -- ==============================================================
-UPDATE productos SET imagen_url = 'GTX 5090.jpg'       WHERE sku = 'gpu-rtx5090';
-UPDATE productos SET imagen_url = 'Asus Strix Z790.jpg' WHERE sku = 'mb-01';
-UPDATE productos SET imagen_url = 'Msi mag B760.png'    WHERE sku = 'mb-02';
-UPDATE productos SET imagen_url = 'Gigabyte X670E.jpg'  WHERE sku = 'mb-03';
-
---  NOTA: El resto de productos (16) usan SVGs placeholder
---  definidos en img/productos/cat-*.svg como fallback visual.
---  Cuando tengas las imágenes reales, agrega más UPDATEs aquí.
+UPDATE productos SET imagen_url = 'GTX 5090.jpg'            WHERE sku = 'gpu-rtx5090';
+UPDATE productos SET imagen_url = 'AMD RX 7900 XTX.jpg'     WHERE sku = 'gpu-rx7900';
+UPDATE productos SET imagen_url = 'RTX 4070 Super.jpg'      WHERE sku = 'gpu-rtx4070';
+UPDATE productos SET imagen_url = 'Asus Strix Z790.jpg'     WHERE sku = 'mb-01';
+UPDATE productos SET imagen_url = 'Msi mag B760.png'        WHERE sku = 'mb-02';
+UPDATE productos SET imagen_url = 'Gigabyte X670E.jpg'      WHERE sku = 'mb-03';
+UPDATE productos SET imagen_url = 'Intel i9-14900K.jpg'     WHERE sku = 'cpu-i9';
+UPDATE productos SET imagen_url = 'AMD Ryzen 9 7950X.jpg'   WHERE sku = 'cpu-r9';
+UPDATE productos SET imagen_url = 'AMD Ryzen 5 7600X.jpg'   WHERE sku = 'cpu-r5';
+UPDATE productos SET imagen_url = 'Corsair Dominator DDR5.jpg' WHERE sku = 'ram-01';
+UPDATE productos SET imagen_url = 'G.Skill Trident Z5.jpg'  WHERE sku = 'ram-02';
+UPDATE productos SET imagen_url = 'Kingston Fury Beast.jpg'  WHERE sku = 'ram-03';
+UPDATE productos SET imagen_url = 'Samsung 990 Pro.jpg'     WHERE sku = 'ssd-01';
+UPDATE productos SET imagen_url = 'WD Black SN850X.jpg'     WHERE sku = 'ssd-02';
+UPDATE productos SET imagen_url = 'Seagate Barracuda 4TB.jpg' WHERE sku = 'hdd-01';
+UPDATE productos SET imagen_url = 'Crucial P5 Plus.jpg'     WHERE sku = 'ssd-03';
+UPDATE productos SET imagen_url = 'Logitech G Pro X TKL.jpg' WHERE sku = 'per-kb';
+UPDATE productos SET imagen_url = 'Razer DeathAdder V3.jpg' WHERE sku = 'per-ms';
+UPDATE productos SET imagen_url = 'HyperX Cloud Alpha.jpg'  WHERE sku = 'per-hd';
+UPDATE productos SET imagen_url = 'SteelSeries Rival 650.jpg' WHERE sku = 'per-ms2';
