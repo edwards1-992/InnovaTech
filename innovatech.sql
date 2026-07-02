@@ -52,6 +52,7 @@ CREATE TABLE productos (
   precio           DECIMAL(10,2)    NOT NULL DEFAULT 0.00,
   precio_anterior  DECIMAL(10,2)    DEFAULT NULL,
   stock            INT UNSIGNED     NOT NULL DEFAULT 0,
+  imagen_url       VARCHAR(255)     DEFAULT NULL,
   emoji            VARCHAR(20)      DEFAULT NULL,
   badge            VARCHAR(40)      DEFAULT NULL,
   badge_tipo       VARCHAR(10)      DEFAULT NULL,

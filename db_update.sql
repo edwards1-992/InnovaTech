@@ -12,7 +12,14 @@
 USE railway;
 
 -- ==============================================================
---  1. Añadir columna 'rol' a la tabla clientes
+--  1. Añadir columna 'imagen_url' a la tabla productos
+-- ==============================================================
+ALTER TABLE productos
+  ADD COLUMN imagen_url VARCHAR(255) DEFAULT NULL
+  AFTER emoji;
+
+-- ==============================================================
+--  2. Añadir columna 'rol' a la tabla clientes
 --  Valores posibles: 'cliente' (default) o 'admin'
 --  Se inserta después de la columna 'activo'
 -- ==============================================================
@@ -21,7 +28,7 @@ ALTER TABLE clientes
   AFTER activo;
 
 -- ==============================================================
---  2. Insertar usuario administrador por defecto
+--  3. Insertar usuario administrador por defecto
 --  Email:    admin@innovatech.com
 --  Password: innovatech (hash bcrypt verificado)
 --  Rol:      admin
@@ -35,7 +42,7 @@ VALUES ('Administrador', 'admin@innovatech.com',
 ON DUPLICATE KEY UPDATE nombre = VALUES(nombre), rol = VALUES(rol);
 
 -- ==============================================================
---  3. Asignar rutas de imágenes locales a productos existentes
+--  4. Asignar rutas de imágenes locales a productos existentes
 --  Las imágenes deben estar en: img/productos/
 --  Formato: UPDATE productos SET imagen_url = 'archivo.ext'
 --           WHERE sku = 'sku-del-producto';
