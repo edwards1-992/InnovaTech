@@ -29,6 +29,6 @@ ALTER TABLE clientes
 -- ==============================================================
 INSERT INTO clientes (nombre, email, password_hash, rol, activo)
 VALUES ('Administrador', 'admin@innovatech.com',
-        '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+        '$2y$10$h1z61BOJp./Z4abne5J53uVA7o/6g/giZUEz2sZ.1pmY859Y0CfEK',
         'admin', 1)
 ON DUPLICATE KEY UPDATE nombre = VALUES(nombre), rol = VALUES(rol);
