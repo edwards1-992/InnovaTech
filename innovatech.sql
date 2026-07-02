@@ -238,147 +238,147 @@ INSERT INTO categorias (nombre, emoji, descripcion) VALUES
 
 -- ── Tarjetas Madres (categoria_id = 1) ──
 INSERT INTO productos
-  (sku, nombre, categoria_id, especificaciones, precio, precio_anterior, stock, emoji, badge, badge_tipo, destacado)
+  (sku, nombre, categoria_id, especificaciones, precio, precio_anterior, stock, emoji, imagen_url, badge, badge_tipo, destacado)
 VALUES
   ('mb-01',
    'ASUS ROG Strix Z790-E',
    1,
    'Socket LGA1700 - DDR5 - Wi-Fi 6E',
-   449.00, NULL, 12, '🖥️', 'Top Seller', 'cyan', 1),
+   449.00, NULL, 12, '🖥️', 'Asus Strix Z790.jpg', 'Top Seller', 'cyan', 1),
 
   ('mb-02',
    'MSI MAG B760M Mortar',
    1,
    'Socket LGA1700 - DDR4/DDR5 - mATX',
-   189.00, NULL, 25, '🖥️', NULL, NULL, 0),
+   189.00, NULL, 25, '🖥️', 'Msi mag B760.png', NULL, NULL, 0),
 
   ('mb-03',
    'Gigabyte X670E Aorus Master',
    1,
    'Socket AM5 - DDR5 - PCIe 5.0',
-   529.00, NULL, 8, '🖥️', 'Nuevo', 'azul', 0);
+   529.00, NULL, 8, '🖥️', 'Gigabyte X670E.jpg', 'Nuevo', 'azul', 0);
 
 -- ── Tarjetas Gráficas (categoria_id = 2) ──
 INSERT INTO productos
-  (sku, nombre, categoria_id, especificaciones, precio, precio_anterior, stock, emoji, badge, badge_tipo, destacado)
+  (sku, nombre, categoria_id, especificaciones, precio, precio_anterior, stock, emoji, imagen_url, badge, badge_tipo, destacado)
 VALUES
   ('gpu-rtx5090',
    'NVIDIA RTX 5090 Ti 32 GB',
    2,
    'GDDR7 - PCIe 5.0 - 450W TDP',
-   1149.00, 1499.00, 5, '🎮', 'Oferta', 'rojo', 1),
+   1149.00, 1499.00, 5, '🎮', 'GTX 5090.jpg', 'Oferta', 'rojo', 1),
 
   ('gpu-rx7900',
    'AMD Radeon RX 7900 XTX',
    2,
    '24 GB GDDR6 - PCIe 4.0 - 355W',
-   879.00, NULL, 7, '🎮', NULL, NULL, 1),
+   879.00, NULL, 7, '🎮', 'AMD RX 7900 XTX.jpg', NULL, NULL, 1),
 
   ('gpu-rtx4070',
    'NVIDIA RTX 4070 Super 12 GB',
    2,
    'GDDR6X - PCIe 4.0 - 220W',
-   599.00, 699.00, 0, '🎮', 'Oferta', 'rojo', 0);
+   599.00, 699.00, 0, '🎮', 'RTX 4070 Super.jpg', 'Oferta', 'rojo', 0);
 
 -- ── Procesadores (categoria_id = 3) ──
 INSERT INTO productos
-  (sku, nombre, categoria_id, especificaciones, precio, precio_anterior, stock, emoji, badge, badge_tipo, destacado)
+  (sku, nombre, categoria_id, especificaciones, precio, precio_anterior, stock, emoji, imagen_url, badge, badge_tipo, destacado)
 VALUES
   ('cpu-i9',
    'Intel Core i9-14900K',
    3,
    '24 núcleos - 5.8 GHz boost - 125W',
-   549.00, NULL, 14, '⚙️', 'Top', 'cyan', 1),
+   549.00, NULL, 14, '⚙️', 'Intel i9-14900K.jpg', 'Top', 'cyan', 1),
 
   ('cpu-r9',
    'AMD Ryzen 9 7950X',
    3,
    '16 núcleos - 5.7 GHz - AM5 - 170W',
-   699.00, NULL, 9, '⚙️', NULL, NULL, 0),
+   699.00, NULL, 9, '⚙️', 'AMD Ryzen 9 7950X.jpg', NULL, NULL, 0),
 
   ('cpu-r5',
    'AMD Ryzen 5 7600X',
    3,
    '6 núcleos - 5.3 GHz - AM5 - 105W',
-   249.00, 299.00, 20, '⚙️', 'Oferta', 'rojo', 0);
+   249.00, 299.00, 20, '⚙️', 'AMD Ryzen 5 7600X.jpg', 'Oferta', 'rojo', 0);
 
 -- ── Memorias RAM (categoria_id = 4) ──
 INSERT INTO productos
-  (sku, nombre, categoria_id, especificaciones, precio, precio_anterior, stock, emoji, badge, badge_tipo, destacado)
+  (sku, nombre, categoria_id, especificaciones, precio, precio_anterior, stock, emoji, imagen_url, badge, badge_tipo, destacado)
 VALUES
   ('ram-01',
    'Corsair Dominator 32 GB DDR5',
    4,
    'DDR5-6000 - CL36 - RGB',
-   169.00, NULL, 30, '💾', NULL, NULL, 0),
+   169.00, NULL, 30, '💾', 'Corsair Dominator DDR5.jpg', NULL, NULL, 0),
 
   ('ram-02',
    'G.Skill Trident Z5 64 GB DDR5',
    4,
    'DDR5-6400 - CL32 - Kit 2x32 GB',
-   289.00, NULL, 15, '💾', 'Nuevo', 'azul', 1),
+   289.00, NULL, 15, '💾', 'G.Skill Trident Z5.jpg', 'Nuevo', 'azul', 1),
 
   ('ram-03',
    'Kingston Fury Beast 16 GB DDR4',
    4,
    'DDR4-3600 - CL17 - Kit 2x8 GB',
-   69.00, NULL, 50, '💾', NULL, NULL, 0);
+   69.00, NULL, 50, '💾', 'Kingston Fury Beast.jpg', NULL, NULL, 0);
 
 -- ── Almacenamiento (categoria_id = 5) ──
 INSERT INTO productos
-  (sku, nombre, categoria_id, especificaciones, precio, precio_anterior, stock, emoji, badge, badge_tipo, destacado)
+  (sku, nombre, categoria_id, especificaciones, precio, precio_anterior, stock, emoji, imagen_url, badge, badge_tipo, destacado)
 VALUES
   ('ssd-01',
    'Samsung 990 Pro 2 TB NVMe',
    5,
    'PCIe 5.0 M.2 - 12400 MB/s',
-   219.00, NULL, 22, '💿', 'Top Seller', 'cyan', 1),
+   219.00, NULL, 22, '💿', 'Samsung 990 Pro.jpg', 'Top Seller', 'cyan', 1),
 
   ('ssd-02',
    'WD Black SN850X 1 TB',
    5,
    'PCIe 4.0 M.2 - 7300 MB/s NVMe 2.0',
-   129.00, NULL, 18, '💿', NULL, NULL, 0),
+   129.00, NULL, 18, '💿', 'WD Black SN850X.jpg', NULL, NULL, 0),
 
   ('hdd-01',
    'Seagate Barracuda 4 TB HDD',
    5,
    'SATA III - 7200 RPM - 256 MB cache',
-   79.00, NULL, 40, '💿', NULL, NULL, 0),
+   79.00, NULL, 40, '💿', 'Seagate Barracuda 4TB.jpg', NULL, NULL, 0),
 
   ('ssd-03',
    'Crucial P5 Plus 500 GB SSD',
    5,
    'PCIe 4.0 NVMe M.2 - 6600 MB/s',
-   59.00, 79.00, 35, '💿', 'Oferta', 'rojo', 0);
+   59.00, 79.00, 35, '💿', 'Crucial P5 Plus.jpg', 'Oferta', 'rojo', 0);
 
 -- ── Periféricos (categoria_id = 6) ──
 INSERT INTO productos
-  (sku, nombre, categoria_id, especificaciones, precio, precio_anterior, stock, emoji, badge, badge_tipo, destacado)
+  (sku, nombre, categoria_id, especificaciones, precio, precio_anterior, stock, emoji, imagen_url, badge, badge_tipo, destacado)
 VALUES
   ('per-kb',
    'Logitech G Pro X TKL',
    6,
    'Teclado mecanico - RGB - inalambrico',
-   149.00, NULL, 17, '⌨️', NULL, NULL, 1),
+   149.00, NULL, 17, '⌨️', 'Logitech G Pro X TKL.jpg', NULL, NULL, 1),
 
   ('per-ms',
    'Razer DeathAdder V3 Pro',
    6,
    'Mouse inalambrico - 63 g - 30000 DPI',
-   119.00, NULL, 23, '🖱️', 'Nuevo', 'azul', 0),
+   119.00, NULL, 23, '🖱️', 'Razer DeathAdder V3.jpg', 'Nuevo', 'azul', 0),
 
   ('per-hd',
    'HyperX Cloud Alpha Wireless',
    6,
    'Audifonos - 300 h bateria - 7.1 virtual',
-   199.00, NULL, 0, '🎧', NULL, NULL, 0),
+   199.00, NULL, 0, '🎧', 'HyperX Cloud Alpha.jpg', NULL, NULL, 0),
 
   ('per-ms2',
    'SteelSeries Rival 650 Wireless',
    6,
    'Mouse gaming - 256 DPI - dual sensor',
-   89.00, 119.00, 11, '🖱️', 'Oferta', 'rojo', 0);
+   89.00, 119.00, 11, '🖱️', 'SteelSeries Rival 650.jpg', 'Oferta', 'rojo', 0);
 
 
 -- ==============================================================
