@@ -30,10 +30,11 @@ function env($key, $default = null) {
 }
 
 // ─── Constantes de conexión ──────────────────────────────────
-define('DB_HOST',    env('MYSQL_HOST')    ?: env('MYSQL_URL') ?: 'localhost');
-define('DB_NAME',    env('MYSQL_DATABASE') ?: env('MYSQL_DB') ?: 'innovatech');
-define('DB_USER',    env('MYSQL_USER')     ?: 'root');
-define('DB_PASS',    env('MYSQL_PASSWORD') ?: env('MYSQL_ROOT_PASSWORD') ?: '');
+// Railway puede usar MYSQLHOST (sin guion bajo) o MYSQL_HOST (con guion bajo)
+define('DB_HOST',    env('MYSQL_HOST') ?: env('MYSQLHOST')    ?: env('MYSQL_URL') ?: 'localhost');
+define('DB_NAME',    env('MYSQL_DATABASE') ?: env('MYSQLDATABASE') ?: env('MYSQL_DB') ?: 'innovatech');
+define('DB_USER',    env('MYSQL_USER') ?: env('MYSQLUSER')    ?: 'root');
+define('DB_PASS',    env('MYSQL_PASSWORD') ?: env('MYSQLPASSWORD') ?: env('MYSQL_ROOT_PASSWORD') ?: '');
 define('DB_CHARSET', 'utf8mb4');
 
 // ─── Cabeceras HTTP (CORS) para comunicación con JS ──────────
@@ -78,13 +79,7 @@ function conectar(): PDO {
         http_response_code(500);
         echo json_encode([
             'error'   => 'Error de conexión a MySQL',
-            'detalle' => $e->getMessage(),
-            'debug'   => [
-                'host'   => DB_HOST,
-                'db'     => DB_NAME,
-                'user'   => DB_USER,
-                'has_pw' => DB_PASS !== '',
-            ]
+            'detalle' => $e->getMessage()
         ]);
         exit();
     }
